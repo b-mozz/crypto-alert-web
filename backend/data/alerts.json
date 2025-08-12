@@ -44,7 +44,7 @@
     "coin": "bitcoin",
     "type": "price_below",
     "threshold": 118970,
-    "active": true,
+    "active": false,
     "createdAt": "2025-08-12T01:26:22.114Z"
   },
   {

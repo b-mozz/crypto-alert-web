@@ -19,12 +19,88 @@
             min-height: 100vh;
             margin: 0;
             transition: all 0.3s ease;
+            scroll-behavior: smooth;
         }
 
         .container {
             max-width: 1200px;
             margin: 0 auto;
             padding: 0 20px;
+        }
+
+        /* Side Navigation */
+        .side-nav {
+            position: fixed;
+            right: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-dot::before {
+            content: attr(data-title);
+            position: absolute;
+            right: 25px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 12px;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            pointer-events: none;
+        }
+
+        .nav-dot:hover::before {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .nav-dot:hover {
+            background: rgba(255, 255, 255, 0.6);
+            border-color: rgba(255, 255, 255, 0.8);
+            transform: scale(1.2);
+        }
+
+        .nav-dot.active {
+            background: #ffffff;
+            border-color: #ffffff;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+        }
+
+        @media (max-width: 768px) {
+            .side-nav {
+                right: 15px;
+                gap: 10px;
+            }
+            
+            .nav-dot {
+                width: 10px;
+                height: 10px;
+            }
+            
+            .nav-dot::before {
+                display: none;
+            }
         }
 
         /* Hero Section */
@@ -614,8 +690,16 @@
     </style>
 </head>
 <body>
+    <!-- Side Navigation -->
+    <div class="side-nav">
+        <div class="nav-dot active" data-title="Home" data-section="home"></div>
+        <div class="nav-dot" data-title="Live Prices" data-section="watchlist"></div>
+        <div class="nav-dot" data-title="Create Alert" data-section="create-alert"></div>
+        <div class="nav-dot" data-title="Recent Alerts" data-section="alerts"></div>
+    </div>
+
     <!-- Hero Section -->
-    <section class="hero">
+    <section id="home" class="hero">
         <div class="container">
             <div class="hero-content">
                 <h1>Crypto Alert System</h1>
@@ -645,7 +729,7 @@
     </section>
 
     <!-- Watchlist Section -->
-    <section class="section">
+    <section id="watchlist" class="section">
         <div class="container">
             <h2 class="section-title">Live Watchlist</h2>
             <div class="watchlist-grid" id="watchlist">
@@ -714,7 +798,7 @@
     </section>
 
     <!-- Alert Form -->
-    <section class="section">
+    <section id="create-alert" class="section">
         <div class="container">
             <h2 class="section-title">Create New Alert</h2>
             <div class="alert-form-container">
@@ -748,7 +832,7 @@
         </div>
     </section>
     <!-- Alerts History Section -->
-    <section class="section">
+    <section id="alerts" class="section">
         <div class="container">
             <h2 class="section-title">Recent Alerts</h2>
             <div class="alerts-container">
@@ -790,6 +874,54 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // Side Navigation Functionality
+    const navDots = document.querySelectorAll('.nav-dot');
+    const sections = document.querySelectorAll('section[id]');
+    
+    // Navigation click handlers
+    navDots.forEach(dot => {
+        dot.addEventListener('click', function() {
+            const targetSection = this.getAttribute('data-section');
+            const section = document.getElementById(targetSection);
+            
+            if (section) {
+                section.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        });
+    });
+    
+    // Intersection Observer for active section highlighting
+    const observerOptions = {
+        root: null,
+        rootMargin: '-50% 0px -50% 0px',
+        threshold: 0
+    };
+    
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const sectionId = entry.target.id;
+                
+                // Remove active class from all nav dots
+                navDots.forEach(dot => dot.classList.remove('active'));
+                
+                // Add active class to corresponding nav dot
+                const activeDot = document.querySelector(`[data-section="${sectionId}"]`);
+                if (activeDot) {
+                    activeDot.classList.add('active');
+                }
+            }
+        });
+    }, observerOptions);
+    
+    // Observe all sections
+    sections.forEach(section => {
+        observer.observe(section);
+    });
+    
     // Fetch real crypto prices from your API
     async function loadCryptoPrices() {
         try {
