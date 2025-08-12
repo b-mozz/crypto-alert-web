@@ -25,6 +25,7 @@ const corsOptions = {
 app.use(cors(corsOptions));
 // Persistent storage for user alerts
 const ALERTS_FILE = path.join(__dirname, 'data', 'alerts.json');
+const ALERT_HISTORY_FILE = path.join(__dirname, 'data', 'alert_history.json');
 
 // Nodemailer config - uses app passwords for Gmail
 const EMAIL_CONFIG = {
@@ -73,6 +74,65 @@ function writeAlerts(alerts) {
     }
 }
 
+// Alert history I/O operations
+function readAlertHistory() {
+    try {
+        if (!fs.existsSync(ALERT_HISTORY_FILE)) {
+            const dir = path.dirname(ALERT_HISTORY_FILE);
+            if (!fs.existsSync(dir)) {
+                fs.mkdirSync(dir, { recursive: true });
+            }
+            fs.writeFileSync(ALERT_HISTORY_FILE, '[]');
+            return [];
+        }
+        const data = fs.readFileSync(ALERT_HISTORY_FILE, 'utf8');
+        return JSON.parse(data);
+    } catch (error) {
+        console.error('Error reading alert history file:', error);
+        return [];
+    }
+}
+
+function writeAlertHistory(history) {
+    try {
+        fs.writeFileSync(ALERT_HISTORY_FILE, JSON.stringify(history, null, 2));
+        return true;
+    } catch (error) {
+        console.error('Error writing alert history file:', error);
+        return false;
+    }
+}
+
+// Save triggered alert to history
+function saveTriggeredAlert(alert, currentPrice, coinData) {
+    try {
+        const history = readAlertHistory();
+        const triggeredAlert = {
+            id: history.length + 1,
+            coin: alert.coin,
+            coinName: coinData.name || alert.coin.charAt(0).toUpperCase() + alert.coin.slice(1),
+            type: alert.type,
+            threshold: alert.threshold,
+            triggeredPrice: currentPrice,
+            triggeredAt: new Date().toISOString(),
+            change: coinData.change || 0
+        };
+        
+        history.unshift(triggeredAlert); // Add to beginning of array
+        
+        // Keep only last 50 triggered alerts
+        if (history.length > 50) {
+            history.splice(50);
+        }
+        
+        writeAlertHistory(history);
+        return true;
+    } catch (error) {
+        console.error('Error saving triggered alert to history:', error);
+        return false;
+    }
+}
+
 // Check active alerts against current market prices
 async function checkAlerts(cryptoData) {
     try {
@@ -99,6 +159,9 @@ async function checkAlerts(cryptoData) {
             
             if (shouldTrigger) {
                 console.log(`🚨 Alert triggered for ${coin}: $${currentPrice} ${type} $${threshold}`);
+                
+                // Save to history before sending notification
+                saveTriggeredAlert(alert, currentPrice, coinData);
                 
                 // Trigger email notification
                 await sendNotification(alert, currentPrice, coinData);
@@ -428,5 +491,22 @@ app.post('/api/test-email', async (req, res) => {
     } catch (error) {
         console.error('❌ Error sending test email:', error);
         res.status(500).json({ error: 'Failed to send test email' });
+    }
+});
+
+// GET /api/alert-history - Get triggered alerts history
+app.get('/api/alert-history', (req, res) => {
+    try {
+        const history = readAlertHistory();
+        console.log('📋 Fetching alert history...');
+        console.log('📊 Found', history.length, 'triggered alerts');
+        
+        res.json({
+            success: true,
+            data: history
+        });
+    } catch (error) {
+        console.error('❌ Error fetching alert history:', error);
+        res.status(500).json({ error: 'Failed to fetch alert history' });
     }
 });

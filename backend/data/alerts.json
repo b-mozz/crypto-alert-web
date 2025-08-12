@@ -54,5 +54,29 @@
     "threshold": 119000,
     "active": false,
     "createdAt": "2025-08-12T01:41:00.338Z"
+  },
+  {
+    "id": 8,
+    "coin": "bitcoin",
+    "type": "price_below",
+    "threshold": 119000,
+    "active": true,
+    "createdAt": "2025-08-12T21:15:19.940Z"
+  },
+  {
+    "id": 9,
+    "coin": "bitcoin",
+    "type": "price_above",
+    "threshold": 119000,
+    "active": false,
+    "createdAt": "2025-08-12T21:15:31.661Z"
+  },
+  {
+    "id": 10,
+    "coin": "ethereum",
+    "type": "price_above",
+    "threshold": 4500,
+    "active": false,
+    "createdAt": "2025-08-12T21:16:40.727Z"
   }
 ]

@@ -1,0 +1,22 @@
+[
+  {
+    "id": 2,
+    "coin": "ethereum",
+    "coinName": "Ethereum",
+    "type": "price_above",
+    "threshold": 4500,
+    "triggeredPrice": 4608.37,
+    "triggeredAt": "2025-08-12T21:16:46.369Z",
+    "change": 8.344407580642438
+  },
+  {
+    "id": 1,
+    "coin": "bitcoin",
+    "coinName": "Bitcoin",
+    "type": "price_above",
+    "threshold": 119000,
+    "triggeredPrice": 120004,
+    "triggeredAt": "2025-08-12T21:15:36.886Z",
+    "change": 0.9043872400998564
+  }
+]
