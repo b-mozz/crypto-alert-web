@@ -78,5 +78,13 @@
     "threshold": 4500,
     "active": false,
     "createdAt": "2025-08-12T21:16:40.727Z"
+  },
+  {
+    "id": 11,
+    "coin": "dogecoin",
+    "type": "price_above",
+    "threshold": 0.2,
+    "active": false,
+    "createdAt": "2025-08-12T21:25:33.138Z"
   }
 ]

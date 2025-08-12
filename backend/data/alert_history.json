@@ -1,5 +1,15 @@
 [
   {
+    "id": 3,
+    "coin": "dogecoin",
+    "coinName": "Dogecoin",
+    "type": "price_above",
+    "threshold": 0.2,
+    "triggeredPrice": 0.236891,
+    "triggeredAt": "2025-08-12T21:25:40.338Z",
+    "change": 4.332637580741989
+  },
+  {
     "id": 2,
     "coin": "ethereum",
     "coinName": "Ethereum",
