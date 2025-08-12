@@ -1,0 +1,58 @@
+[
+  {
+    "id": 1,
+    "coin": "bitcoin",
+    "type": "price_above",
+    "threshold": 100000,
+    "active": false,
+    "createdAt": "2024-12-10T10:00:00.000Z"
+  },
+  {
+    "id": 2,
+    "coin": "litecoin",
+    "type": "price_above",
+    "threshold": 200,
+    "active": true,
+    "createdAt": "2025-08-10T19:56:56.571Z"
+  },
+  {
+    "id": 3,
+    "coin": "ethereum",
+    "type": "price_below",
+    "threshold": 3000,
+    "active": true,
+    "createdAt": "2025-08-10T20:01:31.124Z"
+  },
+  {
+    "id": 4,
+    "coin": "bitcoin",
+    "type": "price_above",
+    "threshold": 119000,
+    "active": false,
+    "createdAt": "2025-08-12T01:11:50.258Z"
+  },
+  {
+    "id": 5,
+    "coin": "bitcoin",
+    "type": "price_above",
+    "threshold": 119000,
+    "active": false,
+    "createdAt": "2025-08-12T01:18:32.158Z"
+  },
+  {
+    "id": 6,
+    "coin": "bitcoin",
+    "type": "price_below",
+    "threshold": 118970,
+    "active": true,
+    "createdAt": "2025-08-12T01:26:22.114Z"
+  },
+  {
+    "id": 7,
+    "coin": "bitcoin",
+    "type": "price_above",
+    "threshold": 119000,
+    "active": false,
+    "createdAt": "2025-08-12T01:41:00.338Z"
+  }
+]

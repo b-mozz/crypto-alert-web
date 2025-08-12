@@ -1,0 +1,956 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crypto Alert System - Bimukti Mozzumdar</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #f0f0f0;
+            background: #0a0a0a;
+            min-height: 100vh;
+            margin: 0;
+            transition: all 0.3s ease;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            background: #0a0a0a;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.03) 0%, transparent 50%);
+            animation: pulse 4s ease-in-out infinite;
+        }
+
+        .hero-content {
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 60px 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            max-width: 800px;
+            position: relative;
+            z-index: 1;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #ffffff, #a0a0a0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        .hero .subtitle {
+            font-size: 1.3rem;
+            color: #b0b0b0;
+            margin-bottom: 30px;
+            font-weight: 300;
+            opacity: 0.9;
+        }
+
+        .hero .description {
+            font-size: 1.1rem;
+            color: #d0d0d0;
+            line-height: 1.8;
+            margin-bottom: 40px;
+        }
+
+        .hero .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            margin-top: 40px;
+        }
+
+        .stat-item {
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            text-align: center;
+            transition: all 0.3s ease;
+            animation: slideIn 0.6s ease-out;
+        }
+
+        .stat-item:hover {
+            background: rgba(255, 255, 255, 0.08);
+            transform: translateY(-2px);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #ffffff;
+            animation: countUp 1s ease-out;
+        }
+
+        .stat-label {
+            color: #a0a0a0;
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+
+        /* Section Styles */
+        .section {
+            min-height: 100vh;
+            padding: 80px 0;
+            background: #111111;
+            position: relative;
+        }
+
+        .section:nth-child(odd) {
+            background: #0f0f0f;
+        }
+
+        .section:nth-child(even) {
+            background: #141414;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 50px;
+            color: #ffffff;
+            opacity: 0;
+            animation: fadeInDown 0.8s ease-out 0.2s forwards;
+        }
+
+        /* Watchlist Section */
+        .watchlist-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .crypto-card {
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 30px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            animation: slideInUp 0.6s ease-out;
+        }
+
+        .crypto-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.05), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .crypto-card:hover::before {
+            left: 100%;
+        }
+
+        .crypto-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.05);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .crypto-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .crypto-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            margin-right: 15px;
+            background: linear-gradient(135deg, #ffffff, #a0a0a0);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #000000;
+            font-weight: bold;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
+
+        .crypto-card:hover .crypto-icon {
+            transform: rotate(360deg);
+            background: linear-gradient(135deg, #f0f0f0, #c0c0c0);
+        }
+
+        .crypto-info h3 {
+            font-size: 1.4rem;
+            margin-bottom: 5px;
+            color: #ffffff;
+        }
+
+        .crypto-symbol {
+            color: #a0a0a0;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+        }
+
+        .crypto-price {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin: 15px 0;
+            transition: all 0.3s ease;
+        }
+
+        .crypto-card:hover .crypto-price {
+            color: #f8f8f8;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+        }
+
+        .price-change {
+            display: inline-flex;
+            align-items: center;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .price-change.positive {
+            background: rgba(34, 197, 94, 0.2);
+            color: #4ade80;
+            border: 1px solid rgba(34, 197, 94, 0.3);
+        }
+
+        .price-change.negative {
+            background: rgba(239, 68, 68, 0.2);
+            color: #f87171;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .crypto-card:hover .price-change {
+            transform: scale(1.05);
+        }
+
+        .alert-status {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #d0d0d0;
+            transition: all 0.3s ease;
+        }
+
+        .alert-status.active {
+            background: rgba(59, 130, 246, 0.1);
+            border-color: rgba(59, 130, 246, 0.3);
+            color: #93c5fd;
+        }
+
+        .crypto-card:hover .alert-status {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        /* Alerts Section */
+        .alerts-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .alert-item {
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-left: 4px solid #ffffff;
+            transition: all 0.3s ease;
+            animation: slideInLeft 0.6s ease-out;
+        }
+
+        .alert-item:hover {
+            transform: translateX(5px);
+            background: rgba(255, 255, 255, 0.05);
+            border-left-color: #f0f0f0;
+        }
+
+        .alert-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .alert-time {
+            color: #a0a0a0;
+            font-size: 0.9rem;
+        }
+
+        .alert-message {
+            font-size: 1.1rem;
+            color: #e0e0e0;
+            line-height: 1.6;
+        }
+
+        .alert-badge {
+            background: #ffffff;
+            color: #000000;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .alert-item:hover .alert-badge {
+            background: #f0f0f0;
+            transform: scale(1.05);
+        }
+
+        /* Scroll Arrow */
+        .scroll-indicator {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #ffffff;
+            font-size: 2rem;
+            animation: bounce 2s infinite;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .scroll-indicator:hover {
+            color: #f0f0f0;
+            transform: translateX(-50%) scale(1.2);
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateX(-50%) translateY(0);
+            }
+            40% {
+                transform: translateX(-50%) translateY(-10px);
+            }
+            60% {
+                transform: translateX(-50%) translateY(-5px);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 0.3;
+            }
+            50% {
+                opacity: 0.6;
+            }
+        }
+
+        @keyframes glow {
+            0% {
+                text-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+            }
+            100% {
+                text-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes countUp {
+            from {
+                transform: scale(0.5);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .hero-content {
+                padding: 40px 20px;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+            
+            .watchlist-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .crypto-card {
+                padding: 20px;
+            }
+
+            .crypto-price {
+                font-size: 1.5rem;
+            }
+        }
+
+        /* Loading Animation */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            border-top: 3px solid #ffffff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Stagger animations for cards */
+        .crypto-card:nth-child(1) { animation-delay: 0.1s; }
+        .crypto-card:nth-child(2) { animation-delay: 0.2s; }
+        .crypto-card:nth-child(3) { animation-delay: 0.3s; }
+        .crypto-card:nth-child(4) { animation-delay: 0.4s; }
+
+        /* Stagger animations for stats */
+        .stat-item:nth-child(1) { animation-delay: 0.1s; }
+        .stat-item:nth-child(2) { animation-delay: 0.2s; }
+        .stat-item:nth-child(3) { animation-delay: 0.3s; }
+
+        /* Stagger animations for alerts */
+        .alert-item:nth-child(1) { animation-delay: 0.1s; }
+        .alert-item:nth-child(2) { animation-delay: 0.2s; }
+        .alert-item:nth-child(3) { animation-delay: 0.3s; }
+
+        .alert-form-container {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .alert-form {
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 15px;
+            transition: all 0.3s ease;
+            animation: slideInUp 0.6s ease-out;
+        }
+
+        .alert-form:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #ffffff;
+        }
+
+        .form-group select,
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            font-size: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            color: #ffffff;
+            transition: all 0.3s ease;
+        }
+
+        .form-group select:focus,
+        .form-group input:focus {
+            outline: none;
+            border-color: rgba(255, 255, 255, 0.4);
+            background: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+        }
+
+        .form-group select option {
+            background: #1a1a1a;
+            color: #ffffff;
+        }
+
+        .alert-form button {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #ffffff, #d0d0d0);
+            color: #000000;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .alert-form button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .alert-form button:hover::before {
+            left: 100%;
+        }
+
+        .alert-form button:hover {
+            background: linear-gradient(135deg, #f8f8f8, #e0e0e0);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(255, 255, 255, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1>Crypto Alert System</h1>
+                <p class="subtitle">A project by Bimukti Mozzumdar</p>
+                <p class="description">
+                    Recently, Coinbase got rid of their customizable alert system for crypto coins. 
+                    So I decided to make my own. This system monitors cryptocurrency prices 24/7 
+                    and sends email alerts when your specified thresholds are met.
+                </p>
+                <div class="stats">
+                    <div class="stat-item">
+                        <div class="stat-number" id="monitored-coins">3</div>
+                        <div class="stat-label">Coins Monitored</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" id="active-alerts">5</div>
+                        <div class="stat-label">Active Alerts</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" id="alerts-sent">12</div>
+                        <div class="stat-label">Alerts Sent</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="scroll-indicator">↓</div>
+    </section>
+
+    <!-- Watchlist Section -->
+    <section class="section">
+        <div class="container">
+            <h2 class="section-title">Live Watchlist</h2>
+            <div class="watchlist-grid" id="watchlist">
+                <!-- Crypto cards will be populated here -->
+                <div class="crypto-card">
+                    <div class="crypto-header">
+                        <div class="crypto-icon">₿</div>
+                        <div class="crypto-info">
+                            <h3>Bitcoin</h3>
+                            <div class="crypto-symbol">BTC</div>
+                        </div>
+                    </div>
+                    <div class="crypto-price">$<span class="loading"></span></div>
+                    <div class="price-change positive">↗ +2.45%</div>
+                    <div class="alert-status active">
+                        <strong>Alert Active:</strong> Notify if price goes above $100,000
+                    </div>
+                </div>
+
+                <div class="crypto-card">
+                    <div class="crypto-header">
+                        <div class="crypto-icon">Ξ</div>
+                        <div class="crypto-info">
+                            <h3>Ethereum</h3>
+                            <div class="crypto-symbol">ETH</div>
+                        </div>
+                    </div>
+                    <div class="crypto-price">$<span class="loading"></span></div>
+                    <div class="price-change negative">↘ -1.23%</div>
+                    <div class="alert-status">
+                        <strong>Alert Active:</strong> Notify if price drops below $3,000
+                    </div>
+                </div>
+
+                <div class="crypto-card">
+                    <div class="crypto-header">
+                        <div class="crypto-icon">Ð</div>
+                        <div class="crypto-info">
+                            <h3>Dogecoin</h3>
+                            <div class="crypto-symbol">DOGE</div>
+                        </div>
+                    </div>
+                    <div class="crypto-price">$<span class="loading"></span></div>
+                    <div class="price-change positive">↗ +5.67%</div>
+                    <div class="alert-status">
+                        <strong>Alert Active:</strong> Notify if price goes above $0.50
+                    </div>
+                </div>
+
+                <div class="crypto-card">
+                    <div class="crypto-header">
+                        <div class="crypto-icon">Ł</div>
+                        <div class="crypto-info">
+                            <h3>Litecoin</h3>
+                            <div class="crypto-symbol">LTC</div>
+                        </div>
+                    </div>
+                    <div class="crypto-price">$<span class="loading"></span></div>
+                    <div class="price-change positive">↗ +0.00%</div>
+                    <div class="alert-status">
+                        <strong>No alerts set</strong> for this coin
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Alert Form -->
+    <section class="section">
+        <div class="container">
+            <h2 class="section-title">Create New Alert</h2>
+            <div class="alert-form-container">
+                <form id="alert-form" class="alert-form">
+                    <div class="form-group">
+                        <label for="coin-select">Choose Coin:</label>
+                        <select id="coin-select" required>
+                            <option value="bitcoin">Bitcoin (BTC)</option>
+                            <option value="ethereum">Ethereum (ETH)</option>
+                            <option value="dogecoin">Dogecoin (DOGE)</option>
+                            <option value="litecoin">Litecoin (LTC)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="alert-type">Alert Type:</label>
+                        <select id="alert-type" required>
+                            <option value="price_above">Price goes above</option>
+                            <option value="price_below">Price goes below</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="threshold">Price Threshold ($):</label>
+                        <input type="number" id="threshold" step="0.01" required>
+                    </div>
+                    
+                    <button type="submit">Create Alert</button>
+                </form>
+            </div>
+        </div>
+    </section>
+    <!-- Alerts History Section -->
+    <section class="section">
+        <div class="container">
+            <h2 class="section-title">Recent Alerts</h2>
+            <div class="alerts-container">
+                <div class="alert-item">
+                    <div class="alert-header">
+                        <span class="alert-badge">Bitcoin Alert</span>
+                        <span class="alert-time">Today, 2:30 PM</span>
+                    </div>
+                    <div class="alert-message">
+                        Bimukti, you received an alert! Bitcoin has reached $97,500. 
+                        Check your inbox for the full details.
+                    </div>
+                </div>
+
+                <div class="alert-item">
+                    <div class="alert-header">
+                        <span class="alert-badge">Ethereum Alert</span>
+                        <span class="alert-time">Yesterday, 11:45 AM</span>
+                    </div>
+                    <div class="alert-message">
+                        Bimukti, you received an alert! Ethereum dropped to $3,200. 
+                        Check your inbox for the full details.
+                    </div>
+                </div>
+
+                <div class="alert-item">
+                    <div class="alert-header">
+                        <span class="alert-badge">Dogecoin Alert</span>
+                        <span class="alert-time">2 days ago, 9:15 AM</span>
+                    </div>
+                    <div class="alert-message">
+                        Bimukti, you received an alert! Dogecoin surged to $0.48. 
+                        Check your inbox for the full details.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Fetch real crypto prices from your API
+    async function loadCryptoPrices() {
+        try {
+            console.log('🔄 Fetching real crypto prices...');
+            const response = await fetch('/api/prices');
+            const data = await response.json();
+            
+            console.log('Got crypto data:', data);
+            
+            // Update the loading spinners with real prices
+            document.querySelectorAll('.loading').forEach((loading, index) => {
+                const coins = ['bitcoin', 'ethereum', 'dogecoin', 'litecoin'];
+                const coinName = coins[index];
+                const coinData = data[coinName];
+                
+                if (coinData) {
+                    loading.parentElement.innerHTML = `$${coinData.price.toLocaleString()}`;
+                }
+            });
+            
+            // Update the price changes
+            const priceChangeElements = document.querySelectorAll('.price-change');
+            priceChangeElements.forEach((element, index) => {
+                const coins = ['bitcoin', 'ethereum', 'dogecoin', 'litecoin'];
+                const coinName = coins[index];
+                const coinData = data[coinName];
+                
+                if (coinData) {
+                    const change = coinData.change;
+                    const arrow = change > 0 ? '↗' : '↘';
+                    const className = change > 0 ? 'positive' : 'negative';
+                    
+                    element.textContent = `${arrow} ${change.toFixed(2)}%`;
+                    element.className = `price-change ${className}`;
+                }
+            });
+            
+        } catch (error) {
+            console.error('Error loading crypto prices:', error);
+        }
+    }
+
+    async function loadStats() {
+        try {
+            const response = await fetch('/api/stats');
+            const stats = await response.json();
+            
+            // Update the stat numbers
+            document.getElementById('monitored-coins').textContent = stats.monitoredCoins;
+            document.getElementById('active-alerts').textContent = stats.activeAlerts;
+            document.getElementById('alerts-sent').textContent = stats.alertsSent;
+            
+            console.log('✅ Stats updated:', stats);
+        } catch (error) {
+            console.error('❌ Error loading stats:', error);
+        }
+    }
+
+    // Handle alert form submission
+    // Add this function to handle form submissions
+async function handleAlertForm() {
+    const form = document.getElementById('alert-form');
+    
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();  // Prevent page refresh
+            
+            // Get form data
+            const coin = document.getElementById('coin-select').value;
+            const type = document.getElementById('alert-type').value;
+            const threshold = parseFloat(document.getElementById('threshold').value);
+            
+            const alertData = {
+                coin: coin,
+                type: type,
+                threshold: threshold,
+                active: true
+            };
+            
+            console.log('📝 Creating alert:', alertData);
+            
+            try {
+                const response = await fetch('/api/alerts', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(alertData)
+                });
+                
+                if (response.ok) {
+                    alert('✅ Alert created successfully!');
+                    form.reset();  // Clear the form
+                } else {
+                    alert('❌ Failed to create alert');
+                }
+            } catch (error) {
+                console.error('Error creating alert:', error);
+                alert('❌ Error creating alert');
+            }
+        });
+    }
+
+    // load existing alerts when the page loads
+    async function loadAlerts() {
+        try {
+            const response = await fetch('/api/alerts');
+            const result = await response.json();
+            const alerts = result.data;
+            
+            console.log('📋 Loaded alerts:', alerts);
+            
+            // Update alert status on crypto cards
+            const cryptoCards = document.querySelectorAll('.crypto-card');
+            cryptoCards.forEach((card, index) => {
+                const coins = ['bitcoin', 'ethereum', 'dogecoin', 'litecoin'];
+                const coinName = coins[index];
+                
+                // Find alerts for this coin
+                const coinAlerts = alerts.filter(alert => alert.coin === coinName && alert.active);
+                
+                const alertStatus = card.querySelector('.alert-status');
+                if (coinAlerts.length > 0) {
+                    const alert = coinAlerts[0]; // Show first alert
+                    const action = alert.type === 'price_above' ? 'goes above' : 'drops below';
+                    alertStatus.innerHTML = `<strong>Alert Active:</strong> Notify if price ${action} $${alert.threshold.toLocaleString()}`;
+                    alertStatus.className = 'alert-status active';
+                } else {
+                    alertStatus.innerHTML = `<strong>No alerts set</strong> for this coin`;
+                    alertStatus.className = 'alert-status';
+                }
+            });
+            
+        } catch (error) {
+            console.error('❌ Error loading alerts:', error);
+        }
+    }
+
+    // Auto-refresh data every 30 seconds
+    function startAutoRefresh() {
+        console.log('🔄 Starting auto-refresh every 30 seconds...');
+        
+        setInterval(async () => {
+            console.log('🔄 Auto-refreshing data...');
+            await loadCryptoPrices();
+            await loadStats();
+            await loadAlerts();
+            
+            // Add timestamp to show last update
+            const now = new Date().toLocaleTimeString();
+            console.log(`✅ Data refreshed at ${now}`);
+        }, 30000); // 30 seconds = 30000 milliseconds
+    }
+
+    // Load prices immediately
+    loadCryptoPrices();
+    loadStats();
+    loadAlerts();  
+    handleAlertForm();
+    startAutoRefresh(); 
+});
+</script>
+
+</body>
+</html>
