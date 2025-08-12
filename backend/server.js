@@ -16,10 +16,13 @@ const API_URL = `${API_BASE_URL}/simple/price?ids=bitcoin,ethereum,dogecoin,lite
 const app = express();
 
 // CORS Configuration
-app.use(cors({
-    origin: process.env.CORS_ORIGIN || 'http://localhost:3000',
+const corsOptions = {
+    origin: process.env.NODE_ENV === 'production' 
+        ? process.env.HEROKU_APP_URL || true  // Allow all origins in production if no specific URL set
+        : process.env.CORS_ORIGIN || 'http://localhost:3000',
     credentials: true
-}));
+};
+app.use(cors(corsOptions));
 // Persistent storage for user alerts
 const ALERTS_FILE = path.join(__dirname, 'data', 'alerts.json');
 
